@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import entity.Player;
+import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
 	
@@ -16,22 +17,18 @@ public class GamePanel extends JPanel implements Runnable {
 	final int scale = 3;
 	
 	public final int tileSize = originalTileSize * scale; //48x48 tile
-	final int maxScreenCol = 16;
-	final int maxScreenRow = 12;
-	final int screenWidth = tileSize * maxScreenCol;  // 760 pixels
-	final int screenHeight = tileSize * maxScreenRow; // 576 pixels
+	public final int maxScreenCol = 16;
+	public final int maxScreenRow = 12;
+	public final int screenWidth = tileSize * maxScreenCol;  // 760 pixels
+	public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 	
 	// FPS
 	int FPS = 60;
 	
+	TileManager tileM = new TileManager(this);
 	KeyHandler keyH = new KeyHandler();
 	Thread gameThread;
 	Player player = new Player(this,keyH);
-	
-	// Set players default position
-	int playerX = 100;
-	int playerY = 100;
-	int playerSpeed = 4; 
 	
 	public GamePanel() {
 		
@@ -48,42 +45,6 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	@Override
-	//The Sleep Method
-//	public void run() {
-//		
-//		double drawInterval = 1000000000/FPS; // drawing in the screen 0.01666 per seconds
-//		double nextDrawTime = System.nanoTime() + drawInterval;
-//		
-//		while (gameThread != null) {
-//
-//			long currentTime = System.nanoTime(); <-- it calculates time -->
-//			System.out.println("The current time:" + currentTime);
-//			
-//			// 1 UPDATE: update information such as character positions
-//			update();
-//			
-//			// 2 DRAW: draw the screen with updated information
-//			repaint();
-//						
-//			try {
-//				double remainingTime = nextDrawTime - System.nanoTime();
-//				remainingTime = remainingTime/1000000; // turning nanoseconds into milliseconds
-//				
-//				if(remainingTime < 0) {
-//					remainingTime = 0;
-//				}
-//				
-//				Thread.sleep((long)remainingTime);
-//				
-//				nextDrawTime += drawInterval;
-//				
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-	//The Delta Method
 	public void run() {
 		double drawInterval = 1000000000/FPS; 
 		double delta = 0;
@@ -129,6 +90,8 @@ public class GamePanel extends JPanel implements Runnable {
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D)g;
+		//make sure to use tileM first for the background
+		tileM.draw(g2);
 		
 		player.draw(g2);
 		
